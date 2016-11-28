@@ -3883,6 +3883,22 @@ DBGPRINTF("AAAA jsonMerge adds '%s'\n", it.key);
 	RETiRet;
 }
 
+static rsRetVal
+jsonMergeNonOverwrite(struct json_object *existing, struct json_object *json)
+{
+	DEFiRet;
+	struct json_object_iter it;
+
+	json_object_object_foreachC(existing, it) {
+		json_object_object_add(json, it.key, json_object_get(it.val));
+	}
+
+	CHKiRet(jsonMerge(existing, json));
+
+finalize_it:
+	RETiRet;
+}
+
 /* find a JSON structure element (field or container doesn't matter).  */
 rsRetVal
 jsonFind(msg_t *pM, es_str_t *propName, struct json_object **jsonres)
@@ -3926,7 +3942,7 @@ msgAddJSON(msg_t *pM, uchar *name, struct json_object *json)
 		if(pM->json == NULL)
 			pM->json = json;
 		else
-			CHKiRet(jsonMerge(pM->json, json));
+			CHKiRet(jsonMergeNonOverwrite(pM->json, json));
 	} else {
 		if(pM->json == NULL) {
 			/* now we need a root obj */
@@ -3945,7 +3961,7 @@ msgAddJSON(msg_t *pM, uchar *name, struct json_object *json)
 			json_object_object_add(parent, (char*)leaf, json);
 		} else {
 			if(json_object_get_type(json) == json_type_object) {
-				CHKiRet(jsonMerge(pM->json, json));
+				CHKiRet(jsonMergeNonOverwrite(pM->json, json));
 			} else {
 //dbgprintf("AAAA: leafnode already exists, type is %d, update with %d\n", (int)json_object_get_type(leafnode), (int)json_object_get_type(json));
 				/* TODO: improve the code below, however, the current
