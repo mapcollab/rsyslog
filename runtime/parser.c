@@ -444,7 +444,7 @@ finalize_it:
 static inline rsRetVal
 ParsePRI(msg_t *pMsg)
 {
-	int pri;
+	unsigned pri;
 	uchar *msg;
 	int lenMsg;
 	DEFiRet;
@@ -463,13 +463,16 @@ ParsePRI(msg_t *pMsg)
 			 * but it offers us performance...
 			 */
 			pri = 0;
-			while(--lenMsg > 0 && isdigit((int) *++msg)) {
+			while(--lenMsg > 0 && isdigit((int) *++msg) && pri <= LOG_MAXPRI) {
 				pri = 10 * pri + (*msg - '0');
 			}
-			if(*msg == '>')
+			if(*msg == '>') {
 				++msg;
-			if(pri & ~(LOG_FACMASK|LOG_PRIMASK))
-				pri = DEFUPRI;
+			} else {
+				pri = LOG_PRI_INVLD;
+			}
+			if(pri > LOG_MAXPRI)
+				pri = LOG_PRI_INVLD;
 		}
 		pMsg->iFacility = LOG_FAC(pri);
 		pMsg->iSeverity = LOG_PRI(pri);

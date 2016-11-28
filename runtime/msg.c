@@ -90,7 +90,7 @@ static char *two_digits[100] = {
 static struct {
 	uchar *pszName;
 	short lenName;
-} syslog_pri_names[192] = {
+} syslog_pri_names[200] = {
 	{ UCHAR_CONSTANT("0"), 3},
 	{ UCHAR_CONSTANT("1"), 3},
 	{ UCHAR_CONSTANT("2"), 3},
@@ -282,22 +282,30 @@ static struct {
 	{ UCHAR_CONSTANT("188"), 5},
 	{ UCHAR_CONSTANT("189"), 5},
 	{ UCHAR_CONSTANT("190"), 5},
-	{ UCHAR_CONSTANT("191"), 5}
+	{ UCHAR_CONSTANT("191"), 5},
+	{ UCHAR_CONSTANT("192"), 5},
+	{ UCHAR_CONSTANT("193"), 5},
+	{ UCHAR_CONSTANT("194"), 5},
+	{ UCHAR_CONSTANT("195"), 5},
+	{ UCHAR_CONSTANT("196"), 5},
+	{ UCHAR_CONSTANT("197"), 5},
+	{ UCHAR_CONSTANT("198"), 5},
+	{ UCHAR_CONSTANT("199"), 5},
 	};
 static char hexdigit[16] =
 	{'0', '1', '2', '3', '4', '5', '6', '7', '8',
 	 '9', 'A', 'B', 'C', 'D', 'E', 'F' };
 
 /*syslog facility names (as of RFC5424) */
-static char *syslog_fac_names[24] = { "kern", "user", "mail", "daemon", "auth", "syslog", "lpr",
+static char *syslog_fac_names[LOG_NFACILITIES] = { "kern", "user", "mail", "daemon", "auth", "syslog", "lpr",
 			    	      "news", "uucp", "cron", "authpriv", "ftp", "ntp", "audit",
 			    	      "alert", "clock", "local0", "local1", "local2", "local3",
-			    	      "local4", "local5", "local6", "local7" };
+			    	      "local4", "local5", "local6", "local7", "invld" };
 /* length of the facility names string (for optimizatiions) */
-static short len_syslog_fac_names[24] = { 4, 4, 4, 6, 4, 6, 3,
+static short len_syslog_fac_names[LOG_NFACILITIES] = { 4, 4, 4, 6, 4, 6, 3,
 			    	          4, 4, 4, 8, 3, 3, 5,
 			    	          5, 5, 6, 6, 6, 6,
-			    	          6, 6, 6, 6 };
+			    	          6, 6, 6, 6, 5 };
 
 /* table of severity names (in numerical order)*/
 static char *syslog_severity_names[8] = { "emerg", "alert", "crit", "err", "warning", "notice", "info", "debug" };
@@ -307,8 +315,8 @@ static short len_syslog_severity_names[8] = { 5, 5, 4, 3, 7, 6, 4, 5 };
  * and facility values to a numerical string... -- rgerhars, 2009-06-17
  */
 
-static char *syslog_number_names[24] = { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14",
-					 "15", "16", "17", "18", "19", "20", "21", "22", "23" };
+static char *syslog_number_names[LOG_NFACILITIES] = { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14",
+					 "15", "16", "17", "18", "19", "20", "21", "22", "23", "24" };
 
 /* global variables */
 #if defined(HAVE_MALLOC_TRIM) && !defined(HAVE_ATOMIC_BUILTINS)
@@ -678,8 +686,8 @@ static inline rsRetVal msgBaseConstruct(msg_t **ppThis)
 	pM->flowCtlType = 0;
 	pM->bParseSuccess = 0;
 	pM->iRefCount = 1;
-	pM->iSeverity = -1;
-	pM->iFacility = -1;
+	pM->iSeverity = LOG_DEBUG;
+	pM->iFacility = LOG_INVLD;
 	pM->iLenPROGNAME = -1;
 	pM->offAfterPRI = 0;
 	pM->offMSG = -1;
@@ -1499,7 +1507,10 @@ uchar *getMSG(msg_t *pM)
 /* Get PRI value as integer */
 static int getPRIi(msg_t *pM)
 {
-	return (pM->iFacility << 3) + (pM->iSeverity);
+	unsigned pri = (pM->iFacility << 3) + (pM->iSeverity);
+	if(pri > LOG_MAXPRI)
+		pri = LOG_PRI_INVLD;
+	return pri;
 }
 
 
