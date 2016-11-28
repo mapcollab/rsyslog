@@ -18,37 +18,7 @@ Release: 12%{?dist}
 License: (GPLv3+ and ASL 2.0)
 Group: System Environment/Daemons
 URL: http://www.rsyslog.com/
-Source0: http://www.rsyslog.com/files/download/rsyslog/%{name}-%{version}.tar.gz
-Source2: rsyslog.conf
-Source3: rsyslog.sysconfig
-Source4: rsyslog.log
-# tweak the upstream service file to honour configuration from /etc/sysconfig/rsyslog
-Patch0: rsyslog-7.4.1-sd-service.patch
-Patch1: rsyslog-7.2.2-manpage-dbg-mode.patch
-# prevent modification of trusted properties (proposed upstream)
-Patch2: rsyslog-7.2.1-msg_c_nonoverwrite_merge.patch
-# sent upstream
-Patch5: rsyslog-7.4.7-bz1030044-remove-ads.patch
-# merged upstream
-Patch6: rsyslog-7.4.7-numeric-uid.patch
-# adapted from http://git.adiscon.com/?p=rsyslog.git;a=commitdiff;h=16207e3d55ac6bb15af6d50791d2c7462816de57
-Patch7: rsyslog-7.4.7-omelasticsearch-atomic-inst.patch
-Patch8: rsyslog-7.4.7-bz1052266-dont-link-libee.patch
-Patch9: rsyslog-7.4.7-bz1054171-omjournal-warning.patch
-Patch10: rsyslog-7.4.7-bz1038136-imjournal-message-loss.patch
-Patch11: rsyslog-7.4.7-bz1142373-cve-2014-3634.patch
-Patch12: rsyslog-7.4.7-rhbz1151037-add-mmcount.patch
-Patch13: rsyslog-7.4.7-rhbz743890-imjournal-sanitize-msgs.patch
-Patch14: rsyslog-7.4.7-rhbz1184410-imuxsock-create-path.patch
-Patch15: rsyslog-7.4.7-rhbz1202489-path-creation-race.patch
-Patch16: rsyslog-7.4.7-rhbz1238713-html-docs.patch
-Patch17: rsyslog-7.4.7-rhbz1078878-division-by-zero.patch
-Patch18: rsyslog-7.4.7-rhbz1143846-clarify-SysSock.Use.patch
-Patch19: rsyslog-7.4.7-rhbz1151041-imuxsock-socket-limit.patch
-Patch20: rsyslog-7.4.7-rhbz1101602-imjournal-zero-bytes.patch
-Patch21: rsyslog-7.4.7-rhbz1188503-imjournal-default-tag.patch
-Patch22: rsyslog-7.4.7-rhbz1184402-imuxsock-hostname.patch
-Patch23: rsyslog-7.4.7-bz1254511-ppc64le_bug.patch
+Source0: %{name}-%{version}.tar.gz
 
 BuildRequires: bison
 BuildRequires: flex
@@ -271,28 +241,6 @@ of source ports.
 
 %prep
 %setup -q
-%patch0 -p1
-%patch1 -p1
-%patch2 -p1
-%patch5 -p1
-%patch6 -p1
-%patch7 -p1
-%patch8 -p1
-%patch9 -p1
-%patch10 -p1
-%patch11 -p1
-%patch12 -p1
-%patch13 -p1
-%patch14 -p1
-%patch15 -p1
-%patch16 -p1
-%patch17 -p1
-%patch18 -p1
-%patch19 -p1
-%patch20 -p1
-%patch21 -p1
-%patch22 -p1
-%patch23 -p1
 
 %build
 %ifarch sparc64
@@ -367,9 +315,9 @@ install -d -m 700 %{buildroot}%{rsyslog_statedir}
 install -d -m 700 %{buildroot}%{rsyslog_pkidir}
 install -d -m 755 %{buildroot}%{rsyslog_docdir}/html
 
-install -p -m 644 %{SOURCE2} %{buildroot}%{_sysconfdir}/rsyslog.conf
-install -p -m 644 %{SOURCE3} %{buildroot}%{_sysconfdir}/sysconfig/rsyslog
-install -p -m 644 %{SOURCE4} %{buildroot}%{_sysconfdir}/logrotate.d/syslog
+install -p -m 644 rsyslog.conf %{buildroot}%{_sysconfdir}/rsyslog.conf
+install -p -m 644 rsyslog.sysconfig %{buildroot}%{_sysconfdir}/sysconfig/rsyslog
+install -p -m 644 rsyslog.log %{buildroot}%{_sysconfdir}/logrotate.d/syslog
 install -p -m 644 plugins/ommysql/createDB.sql %{buildroot}%{rsyslog_docdir}/mysql-createDB.sql
 install -p -m 644 plugins/ompgsql/createDB.sql %{buildroot}%{rsyslog_docdir}/pgsql-createDB.sql
 # extract documentation
