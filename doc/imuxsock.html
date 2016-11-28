@@ -71,8 +71,8 @@ is no reason to receive messages from ourselfs. This setting is vital
 when writing messages to the Linux journal. See <a href="omjournal.html">omjournal</a>
 module documentation for a more in-depth description.
 </li>
-<li><b>SysSock.Use</b> (imuxsock) [on/<b>off</b>] 
-do NOT listen for the local log socket. This is most useful if you run multiple
+<li><b>SysSock.Use</b> (imuxsock) [<b>on</b>/off] 
+Listen on the local log socket. This is most useful if you run multiple
 instances of rsyslogd where only one shall handle the system log socket.
 </li>
 <li><b>SysSock.Name</b> &lt;name-of-socket&gt; 
@@ -259,7 +259,7 @@ the default of "127.0.0.1" is used.
 <li><b>$InputUnixListenSocketUseSysTimeStamp</b> [<b>on</b>/off] equivalent to: UseSysTimeStamp .<br>
 <li><b>$SystemLogSocketIgnoreMsgTimestamp</b> [<b>on</b>/off]<br>
 equivalent to: SysSock.IgnoreTimestamp.</li>
-<li><b>$OmitLocalLogging</b> (imuxsock) [on/<b>off</b>] equivalent to: SysSock.Use</li>
+<li><b>$OmitLocalLogging</b> (imuxsock) [on/<b>off</b>] - The <b>inverse</b> of: SysSock.Use.</li>
 <li><b>$SystemLogSocketName</b> &lt;name-of-socket&gt; equivalent to: SysSock.Name</li>
 <li><b>$SystemLogFlowControl</b> [on/<b>off</b>] - equivalent to: SysSock.FlowControl.</li>
 <li><b>$SystemLogUsePIDFromSystem</b> [on/<b>off</b>] - equivalent to: SysSock.UsePIDFromSystem.
