@@ -23,7 +23,7 @@ maybe around once a year. A major version increment has important
 implications from the support side: without support contracts, the
 current major version's last stable release and the last stable release
 of the version immediately below it are supported (Adiscon, the rsyslog
-sponsor, offers <a href="professional_support.html">support contracts</a> covering all other versions).</p>
+sponsor, offers <a href="http://www.rsyslog.com/professional-services/">support contracts</a> covering all other versions).</p>
 <p>The <span style="font-weight: bold;">minor</span> version is
 incremented whenever a non-trivial new feature is planned to be added.
 Triviality of a feature is simply determined by time estimated to
@@ -57,7 +57,7 @@ more if someone has asked for the feature). So we do not like to wait
 for the original focus feature to be ready (what could take maybe three
 more weeks). As a result, we release the new features. But that version
 will also include partial code of the focus feature. Typically this
-doesn't hurt as long as noone tries to use it (what of course would
+doesn't hurt as long as no one tries to use it (what of course would
 miserably fail). But still, part of the new code is already in it. When
 we release such a "minor-feature enhanced" but "focus-feature not yet
 completed" version, we need a way to flag it. In current thinking, that
@@ -85,14 +85,14 @@ the next minor development version while the previous minor version is
 still a -rc because it is not yet considered sufficiently stable.</p><p>Note: <span style="font-weight: bold;">the
 absence of the -devstate part indicates that a release is stable.
 Following the same logic, any release with a -devstate part is unstable.</span></p><p>A quick sample:&nbsp;</p><p>4.0.0
-is the stable release. We begin to implement relp, moving to
+is the stable release. We begin to implement RELP, moving to
 major.minor to 4.1. While we develop it, someone requests a trivial
 feature, which we implement. We need to release, so we will have
 4.1.0-mf0. Another new feature is requested, move to 4.1.0-mf2. A first
 version of RELP is implemented: 4.1.0-rc0. A new trivial feature is
 implemented: 4.1.0-rc1. Relp is being enhanced: 4.1.0-rc2. We now feel
 RELP is good enough for the time being and begin to implement TLS on
-plain /Tcp syslog: logical increment to 4.2. Now another new feature in
+plain TCP syslog: logical increment to 4.2. Now another new feature in
 that tree: 4.2.0-mf0. Note that we now have 4.0.0 (stable) and
 4.1.0-rc2 and 4.1.0-mf0 (both devel). We find a big bug in RELP coding.
 Two new releases: 4.1.0-rc3, 4.2.0-mf1 (the bug fix acts like a

@@ -2,11 +2,11 @@
 <html><head><title>rsyslog documentation</title></head>
 <body>
 <h1>RSyslog - Documentation</h1>
-<p><b><a href="http://www.rsyslog.com/">Rsyslog</a>
-is an enhanced syslogd
+<p><a href="http://www.rsyslog.com/">Rsyslog</a>
+is an enhanced <b>syslogd</b>
 supporting, among others, <a href="rsyslog_mysql.html">MySQL</a>,
 PostgreSQL, <a href="http://wiki.rsyslog.com/index.php/FailoverSyslogServer">failover
-log destinations</a>, syslog/tcp, fine grain output format
+log destinations</a>, syslog over TCP, fine grain output format
 control, high precision timestamps, queued operations and the ability to filter on any message
 part.</b>
 It is quite compatible to stock sysklogd and can be used as a drop-in
@@ -16,48 +16,37 @@ relay chains while at the same time being very easy to setup for the
 novice user. And as we know what enterprise users really need, there are
 also <a href="http://www.rsyslog.com/professional-services"> rsyslog
 professional services</a> available directly from the source!</p>
-<p><b>Please visit the <a href="http://www.rsyslog.com/sponsors">rsyslog sponsor's page</a>
+<p>Please visit the <a href="http://www.rsyslog.com/sponsors">rsyslog sponsor's page</a>
 to honor the project sponsors or become one yourself!</b> We are very grateful for any help towards the
 project goals.</p>
-<p><b>This documentation is for version 7.4.7 (v7.4-stable branch) of rsyslog.</b>
-Visit the <i><a href="http://www.rsyslog.com/status">rsyslog status page</a></i></b>
-to obtain current version information and project status.
-</p><p><b>If you like rsyslog, you might
-want to lend us a helping hand. </b>It doesn't require a lot of
+<p><b>This documentation is for version 7.4.7 (v7.4-stable branch) of rsyslog.</b> If you use an older
+version, be sure to use the doc that came with it.</p>
+<p>If you like rsyslog, you might
+want to lend us a helping hand. It doesn't require a lot of
 time - even a single mouse click helps. Learn <a href="how2help.html">how to help the rsyslog project</a>.
 Due to popular demand, there is now a <a href="rsyslog_ng_comparison.html">side-by-side comparison
 between rsyslog and syslog-ng</a>.</p>
-<p>If you are upgrading from rsyslog v2 or stock sysklogd,
-<a href="v3compatibility.html">be sure to read the rsyslog v3 compatibility notes</a>,
-and if you are upgrading from v3, read the
-<a href="v4compatibility.html">rsyslog v4 compatibility notes</a>,
-if you upgrade from v4, read the
-<a href="v5compatibility.html">rsyslog v5 compatibility notes</a>, and
-if you upgrade from v5, read the
-<a href="v6compatibility.html">rsyslog v6 compatibility notes</a>.
-if you upgrade from v6, read the
-<a href="v7compatibility.html">rsyslog v7 compatibility notes</a>.
-<p>Rsyslog will work even
-if you do not read the doc, but doing so will definitely improve your experience.</p>
-<p><b>Follow the links below for the</b></p>
+<p><b>If you are upgrading</b>
 <ul>
-<li><a href="troubleshoot.html">troubleshooting rsyslog problems</a></li>
-<li><a href="rsyslog_conf.html">configuration file format (rsyslog.conf)</a></li>
-<li><a href="http://www.rsyslog.com/tool-regex">a regular expression checker/generator tool for rsyslog</a></li>
-<li> <a href="property_replacer.html">property replacer, an important core component</a></li>
-<li><a href="bugs.html">rsyslog bug list</a></li>
+<li>from rsyslog v2 or stock sysklogd,
+<a href="v3compatibility.html">be sure to read the rsyslog v3 compatibility notes</a>,</li>
+<li>if you are upgrading from v3, read the
+<a href="v4compatibility.html">rsyslog v4 compatibility notes</a>,</li>
+<li>if you are upgrading from v4, read the
+<a href="v5compatibility.html">rsyslog v5 compatibility notes</a>,</li>
+<li>if you are upgrading from v5, read the
+<a href="v6compatibility.html">rsyslog v6 compatibility notes</a>, and </li>
+<li>if you are upgrading from v6, read the
+<a href="v7compatibility.html">rsyslog v7 compatibility notes</a>.</li>
+</ul>
+<p><b>The built-in Docs</b></p>
+<ul>
+<li><a href="rsyslog_conf.html">The rsyslog.conf file format and its configuration</a></li>
+<li><a href="property_replacer.html">property replacer, an important core component</a></li>
 <li><a href="messageparser.html">understanding rsyslog message parsers</a></li>
 <li><a href="generic_design.html">backgrounder on generic syslog application design</a></li>
 <li><a href="modules.html">description of rsyslog modules</a></li>
-<li><a href="rsyslog_packages.html">rsyslog packages</a></li>
-</ul>
-<p><b>To keep current on rsyslog development, follow
-<a href="http://twitter.com/rgerhards">Rainer's twitter feed</a>.</b></p>
-<p><b>We have some in-depth papers on</b></p>
-<ul>
-<li><a href="install.html">installing rsyslog</a></li>
-<li><a href="build_from_repo.html">obtaining rsyslog from the source repository</a></li>
-<li><a href="ipv6.html">rsyslog and IPv6</a> (which is fully supported)</li>
+<li><a href="ipv6.html">rsyslog and IPv6</a></li>
 <li><a href="rsyslog_secure_tls.html">native TLS encryption for syslog</a></li>
 <li><a href="multi_ruleset.html">using multiple rule sets in rsyslog</a></li>
 <li><a href="rsyslog_stunnel.html">ssl-encrypting syslog with stunnel</a></li>
@@ -69,36 +58,31 @@ if you do not read the doc, but doing so will definitely improve your experience
 php-syslog-ng with rsyslog</a></li>
 <li><a href="rsyslog_recording_pri.html">recording
 the syslog priority (severity and facility) to the log file</a></li>
-<li><a href="http://www.rsyslog.com/Article19.phtml">preserving
-syslog sender over NAT</a> (online only)</li>
 <li><a href="gssapi.html">an overview and howto of rsyslog gssapi support</a></li>
 <li><a href="debug.html">debug support in rsyslog</a></li>
+<li><a href="troubleshoot.html">troubleshooting rsyslog problems</a></li>
+<li><a href="bugs.html">rsyslog bug list</a></li>
 <li>Developer Documentation
   <ul>
+  <li><a href="rsyslog_packages.html">rsyslog packages</a></li>
+  <li><a href="install.html">installing rsyslog</a></li>
+  <li><a href="build_from_repo.html">obtaining rsyslog from the source repository</a></li>
   <li><a href="build_from_repo.html">building rsyslog from the source repository</a></li>
   <li><a href="dev_oplugins.html">writing rsyslog output plugins</a></li>
   <li><a href="dev_queue.html">the rsyslog message queue object (developer's view)</a></li>
   </ul></li>
 </ul>
-<p>Our <a href="history.html">rsyslog history</a>
-page is for you if you would like to learn a little more
-on why there is an rsyslog at all. If you are interested why you should
-care about rsyslog at all, you may want to read Rainer's essay on "<a href="http://rgerhards.blogspot.com/2007/08/why-does-world-need-another-syslogd.html">why
-the world needs another syslogd</a>".</p>
-<p>Documentation is added continuously. Please note that the
-documentation here
-matches only the current version of rsyslog. If you use an older
-version, be sure to use the doc that came with it.</p>
+
 <p><b>You can also browse the following online resources:</b></p>
 <ul>
+<li><a href="http://www.rsyslog.com/Article19.phtml">preserving
+syslog sender over NAT</a></li>
+<li><a href="http://www.rsyslog.com/tool-regex">a regular expression checker/generator tool for rsyslog</a></li>
 <li>the <a href="http://wiki.rsyslog.com/">rsyslog
 wiki</a>, a community resource which&nbsp;includes <a href="http://wiki.rsyslog.com/index.php/Configuration_Samples">rsyslog configuration examples</a></li>
-<li><a href="http://www.rsyslog.com/module-Static_Docs-view-f-manual.html.phtml">rsyslog
-online documentation (most current version only)</a></li>
 
 <li><a href="http://kb.monitorware.com/rsyslog-f40.html">rsyslog discussion forum - use this for technical support</a></li>
 <li><a href="http://www.rsyslog.com/Topic8.phtml">rsyslog video tutorials</a></li>
-<li><a href="http://www.rsyslog.com/Topic4.phtml">rsyslog change log</a></li>
 <li><a href="http://www.rsyslog.com/Topic3.phtml">rsyslog FAQ</a></li> 
 <li><a href="http://www.monitorware.com/en/syslog-enabled-products/">syslog device configuration guide</a> (off-site)</li>
 <li><a href="http://www.rsyslog.com/PNphpBB2.phtml">rsyslog discussion forum - use this for technical support</a></li>
@@ -111,7 +95,8 @@ may find
 <a href="http://blog.gerhards.net/">blog</a> an
 interesting read (filter on syslog and rsyslog tags).
 Or meet <a href="http://www.facebook.com/people/Rainer-Gerhards/1349393098">Rainer Gerhards at Facebook</a>
-or <a href="https://plus.google.com/112402185904751517878/posts">Google+</a>.
+or <a href="https://plus.google.com/112402185904751517878/posts">Google+</a>.</p>
+<pa>
 If you would like to use rsyslog source code inside your open source project, you can do that without
 any restriction as long as your license is GPLv3 compatible. If your license is incompatible to GPLv3,
 you may even be still permitted to use rsyslog source code. However, then you need to look at the way
@@ -119,5 +104,5 @@ you may even be still permitted to use rsyslog source code. However, then you ne
 <p>Feedback is always welcome, but if you have a support question, please do not
 mail Rainer directly (<a href="free_support.html">why not?</a>) - use the
 <a href="http://lists.adiscon.net/mailman/listinfo/rsyslog">rsyslog mailing list</a>
-or <a href="http://kb.monitorware.com/rsyslog-f40.html">rsyslog formum</a> instead.
+or <a href="http://kb.monitorware.com/rsyslog-f40.html">rsyslog forum</a> instead.
 </body></html>
