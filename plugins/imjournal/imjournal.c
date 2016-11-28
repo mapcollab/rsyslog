@@ -135,6 +135,31 @@ static rsRetVal facilityHdlr(uchar **pp, void *pVal)
 }
 
 
+/* Currently just replaces '\0' with ' '. Not doing so would cause
+ * the value to be truncated. New space is allocated for the resulting
+ * string.
+ */
+static rsRetVal
+sanitizeValue(const char *in, size_t len, char **out)
+{
+	char *buf, *p;
+	DEFiRet;
+
+	CHKmalloc(p = buf = malloc(len + 1));
+	memcpy(buf, in, len);
+	buf[len] = '\0';
+
+	while ((p = memchr(p, '\0', len + buf - p)) != NULL) {
+		*p++ = ' ';
+	}
+
+	*out = buf;
+
+finalize_it:
+	RETiRet;
+}
+
+
 /* enqueue the the journal message into the message queue.
  * The provided msg string is not freed - thus must be done
  * by the caller.
@@ -195,10 +220,9 @@ readjournal() {
 	int r;
 
 	/* Information from messages */
-	char *message;
-	char *sys_pid;
+	char *message = NULL;
 	char *sys_iden;
-	char *sys_iden_help;
+	char *sys_iden_help = NULL;
 
 	const void *get;
 	const void *pidget;
@@ -208,8 +232,6 @@ readjournal() {
 
 	const void *equal_sign;
 	struct json_object *jval;
-	char *data;
-	char *name;
 	size_t l;
 
 	long prefixlen = 0;
@@ -221,11 +243,7 @@ readjournal() {
 	if (sd_journal_get_data(j, "MESSAGE", &get, &length) < 0) {
 		message = strdup("");
 	} else {
-		message = strndup(get+8, length-8);
-		if (message == NULL) {
-			iRet = RS_RET_OUT_OF_MEMORY;
-			goto ret;
-		}
+		CHKiRet(sanitizeValue(((const char *)get) + 8, length - 8, &message));
 	}
 
 	/* Get message severity ("priority" in journald's terminology) */
@@ -264,43 +282,36 @@ readjournal() {
 
 	/* Get message identifier, client pid and add ':' */
 	if (sd_journal_get_data(j, "SYSLOG_IDENTIFIER", &get, &length) >= 0) {
-		sys_iden = strndup(get+18, length-18);
+		CHKiRet(sanitizeValue(((const char *)get) + 18, length - 18, &sys_iden));
 	} else {
-		sys_iden = strdup("journal");
-	}
-	if (sys_iden == NULL) {
-		iRet = RS_RET_OUT_OF_MEMORY;
-		goto free_message;
+		CHKmalloc(sys_iden = strdup("journal"));
 	}
 
 	if (sd_journal_get_data(j, "SYSLOG_PID", &pidget, &pidlength) >= 0) {
-		sys_pid = strndup(pidget+11, pidlength-11);
-		if (sys_pid == NULL) {
-			iRet = RS_RET_OUT_OF_MEMORY;
-			free (sys_iden);
-			goto free_message;
-		}
-	} else {
-		sys_pid = NULL;
-	}
+		char *sys_pid;
 
-	if (sys_pid) {
+		CHKiRet_Hdlr(sanitizeValue(((const char *)pidget) + 11, pidlength - 11, &sys_pid)) {
+			free (sys_iden);
+			FINALIZE;
+		}
 		r = asprintf(&sys_iden_help, "%s[%s]:", sys_iden, sys_pid);
+		free (sys_pid);
 	} else {
 		r = asprintf(&sys_iden_help, "%s:", sys_iden);
 	}
 
 	free (sys_iden);
-	free (sys_pid);
 
 	if (-1 == r) {
-		iRet = RS_RET_OUT_OF_MEMORY;
-		goto finalize_it;
+		ABORT_FINALIZE(RS_RET_OUT_OF_MEMORY);
 	}
 
 	json = json_object_new_object();
 
 	SD_JOURNAL_FOREACH_DATA(j, get, l) {
+		char *data;
+		char *name;
+
 		/* locate equal sign, this is always present */
 		equal_sign = memchr(get, '=', l);
 
@@ -372,18 +383,13 @@ readjournal() {
 			break;
 		}
 
-		if (name == NULL) {
-			iRet = RS_RET_OUT_OF_MEMORY;
-			goto ret;
-		}
+		CHKmalloc(name);
 
 		prefixlen++; /* remove '=' */
 
-		data = strndup(get + prefixlen, l - prefixlen);
-		if (data == NULL) {
-			iRet = RS_RET_OUT_OF_MEMORY;
+		CHKiRet_Hdlr(sanitizeValue(((const char *)get) + prefixlen, l - prefixlen, &data)) {
 			free (name);
-			goto ret;
+			FINALIZE;
 		}
 
 		/* and save them to json object */
@@ -403,10 +409,10 @@ readjournal() {
 	enqMsg((uchar *)message, (uchar *) sys_iden_help, facility, severity, &tv, json);
 
 finalize_it:
-	free(sys_iden_help);
-free_message:
-	free(message);
-ret:
+	if (sys_iden_help != NULL)
+		free(sys_iden_help);
+	if (message != NULL)
+		free(message);
 	RETiRet;
 }
 
