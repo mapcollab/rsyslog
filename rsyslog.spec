@@ -488,6 +488,9 @@ done
 #%{_libdir}/rsyslog/omudpspoof.so
 
 %changelog
+* Tue Nov 29 2016 Tomasz Rostanski <tomasz.rostanski@thalesgroup.com> 7.4.7-12.mps1
+- new package built with tito
+
 * Fri Aug 28 2015 Tomas Heinrich <theinric@redhat.com> 7.4.7-12
 - amend the patch for rhbz#1151041
   resolves: rhbz#1257150
