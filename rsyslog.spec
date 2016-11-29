@@ -264,7 +264,8 @@ export LDFLAGS="-pie -Wl,-z,relro -Wl,-z,now"
 	--enable-imjournal \
 	--enable-unlimited-select \
 	--enable-usertools \
-	--disable-libgcrypt
+	--disable-libgcrypt \
+	--enable-ommpseng
 
 #	--enable-elasticsearch \
 #	--enable-gnutls \
@@ -391,6 +392,7 @@ done
 #%{_libdir}/rsyslog/omjournal.so
 #%{_libdir}/rsyslog/ommail.so
 #%{_libdir}/rsyslog/omprog.so
+%{_libdir}/rsyslog/ommpseng.so
 %{_libdir}/rsyslog/omruleset.so
 #%{_libdir}/rsyslog/omstdout.so
 %{_libdir}/rsyslog/omtesting.so
