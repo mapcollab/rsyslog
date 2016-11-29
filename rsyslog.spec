@@ -65,10 +65,10 @@ Group: Documentation
 #BuildRequires: hiredis-devel
 #%endif
 
-#%package mmjsonparse
-#Summary: JSON enhanced logging support
-#Group: System Environment/Daemons
-#Requires: %name = %version-%release
+%package mmjsonparse
+Summary: JSON enhanced logging support
+Group: System Environment/Daemons
+Requires: %name = %version-%release
 
 #%package mmnormalize
 #Summary: Log normalization support for rsyslog
@@ -176,9 +176,9 @@ This subpackage contains documentation for rsyslog.
 #This module provides output to Redis.
 #%endif
 
-#%description mmjsonparse
-#This module provides the capability to recognize and parse JSON enhanced
-#syslog messages.
+%description mmjsonparse
+This module provides the capability to recognize and parse JSON enhanced
+syslog messages.
 
 #%description mmnormalize
 #This module provides the capability to normalize log messages via liblognorm.
@@ -265,6 +265,7 @@ export LDFLAGS="-pie -Wl,-z,relro -Wl,-z,now"
 	--enable-unlimited-select \
 	--enable-usertools \
 	--disable-libgcrypt \
+	--enable-mmjsonparse \
 	--enable-ommpseng
 
 #	--enable-elasticsearch \
@@ -280,7 +281,6 @@ export LDFLAGS="-pie -Wl,-z,relro -Wl,-z,now"
 #	--enable-mmanon \
 #	--enable-mmaudit \
 #	--enable-mmcount \
-#	--enable-mmjsonparse \
 #	--enable-mmnormalize \
 #	--disable-mmsnmptrapd \
 #	--disable-mysql \
@@ -431,9 +431,9 @@ done
 #%defattr(-,root,root)
 #%{_libdir}/rsyslog/mmaudit.so
 
-#%files mmjsonparse
-#%defattr(-,root,root)
-#%{_libdir}/rsyslog/mmjsonparse.so
+%files mmjsonparse
+%defattr(-,root,root)
+%{_libdir}/rsyslog/mmjsonparse.so
 
 #%files mmnormalize
 #%defattr(-,root,root)
