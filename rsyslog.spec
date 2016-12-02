@@ -14,7 +14,7 @@
 Summary: Enhanced system logging and kernel message trapping daemon
 Name: rsyslog
 Version: 7.4.7
-Release: 12.mps.1%{?dist}
+Release: 12.mps.2%{?dist}
 License: (GPLv3+ and ASL 2.0)
 Group: System Environment/Daemons
 URL: http://www.rsyslog.com/
@@ -490,6 +490,13 @@ done
 #%{_libdir}/rsyslog/omudpspoof.so
 
 %changelog
+* Fri Dec 02 2016 Michal Gawlik <michal.gawlik@thalesgroup.com> 7.4.7-12.mps.2
+- spec: add '.' after 'mps' subversion (michal.gawlik@thalesgroup.com)
+- rsyslog.spec: build rsyslog-mmjsonparse (tomasz.rostanski@thalesgroup.com.pl)
+- rsyslog.spec: install ommpseng plugin (tomasz.rostanski@thalesgroup.com.pl)
+- ommpseng: add plugin for writing to engineering log
+  (tomasz.rostanski@thalesgroup.com.pl)
+
 * Tue Nov 29 2016 Tomasz Rostanski <tomasz.rostanski@thalesgroup.com> 7.4.7-12.mps1
 - new package built with tito
 
