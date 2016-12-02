@@ -14,7 +14,7 @@
 Summary: Enhanced system logging and kernel message trapping daemon
 Name: rsyslog
 Version: 7.4.7
-Release: 12.mps1%{?dist}
+Release: 12.mps.1%{?dist}
 License: (GPLv3+ and ASL 2.0)
 Group: System Environment/Daemons
 URL: http://www.rsyslog.com/
