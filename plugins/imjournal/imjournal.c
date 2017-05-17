@@ -645,8 +645,8 @@ CODESTARTrunInput
 	/* this is an endless loop - it is terminated when the thread is
 	 * signalled to do so. This, however, is handled by the framework.
 	 */
+	int count = 0, r;
 	while (glbl.GetGlobalInputTermState() == 0) {
-		int count = 0, r;
 
 		r = sd_journal_next(j);
 		if (r < 0) {
