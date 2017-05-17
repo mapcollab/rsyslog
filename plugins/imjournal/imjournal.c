@@ -440,7 +440,8 @@ finalize_it:
 static rsRetVal
 persistJournalState () {
 	DEFiRet;
-	FILE *sf; /* state file */
+	FILE *tsf; /* temporary state file */
+	char tmp_sf[MAXFNAME];
 	char *cursor;
 	int ret = 0;
 	char errStr[256];
@@ -448,17 +449,24 @@ persistJournalState () {
 	/* On success, sd_journal_get_cursor()  returns 1 in systemd
 	   197 or older and 0 in systemd 198 or newer */
 	if ((ret = sd_journal_get_cursor(j, &cursor)) >= 0) {
-		if (makeFileParentDirs((uchar*)cs.stateFile, strlen(cs.stateFile), 0755, -1, -1, 0) < 0) {
+		/* we need to create temporary file so we add .tmp
+		 * to the end of our state file */
+		snprintf(tmp_sf, sizeof(tmp_sf), "%s.tmp", cs.stateFile);
+		if (makeFileParentDirs((uchar*)tmp_sf, strlen(tmp_sf), 0755, -1, -1, 0) < 0) {
 			rs_strerror_r(errno, errStr, sizeof(errStr));
 			errmsg.LogError(0, RS_RET_IO_ERROR, "makeFileParentDirs() failed: "
 				"'%s', path: '%s'\n", errStr, cs.stateFile);
 			iRet = RS_RET_IO_ERROR;
-		} else if ((sf = fopen(cs.stateFile, "wb")) != NULL) {
-			if (fprintf(sf, "%s", cursor) < 0) {
+		} else if ((tsf = fopen(tmp_sf, "wb")) != NULL) {
+			if (fprintf(tsf, "%s", cursor) < 0) {
 				iRet = RS_RET_IO_ERROR;
 			}
-			fclose(sf);
+			fclose(tsf);
 			free(cursor);
+			/* when data were successfully writen then files are swapped */
+			if (iRet == RS_RET_OK && rename(tmp_sf, cs.stateFile) == -1) {
+				iRet = RS_RET_IO_ERROR;
+			}
 		} else {
 			rs_strerror_r(errno, errStr, sizeof(errStr));
 			errmsg.LogError(0, RS_RET_FOPEN_FAILURE, "fopen() failed: "
