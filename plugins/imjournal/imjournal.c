@@ -516,6 +516,43 @@ finalize_it:
 }
 
 
+/* Set the journal position before first message of current boot id.
+ * Call to avoid logging messages from previous boots.
+ */
+static rsRetVal
+jumpToCurrentBootStart()
+{
+	DEFiRet;
+	sd_id128_t currentBootID;
+	char filter[64], errStr[256];
+	int r;
+
+	/* Get current boot id and apply appropriate filter.
+	 * Note: trying to not use filter and do sd_journal_seek_monotonic_usec()
+	 * instead does not seem to work as expected. See github systemd #1752.
+	 */
+	sd_id128_get_boot(&currentBootID);
+	snprintf(filter, sizeof(filter), "_BOOT_ID=" SD_ID128_FORMAT_STR, SD_ID128_FORMAT_VAL(currentBootID));
+	r = sd_journal_add_match(j, filter, 0);
+	if (r < 0) {
+		rs_strerror_r(-r, errStr, sizeof(errStr));
+		errmsg.LogError(0, RS_RET_ERR, "sd_journal_add_match(%s) failed: '%s'", filter, errStr);
+		ABORT_FINALIZE(RS_RET_ERR);
+	}
+
+	/* seek to the beginning just to be sure */
+	r = sd_journal_seek_head(j);
+	if (r < 0) {
+		rs_strerror_r(-r, errStr, sizeof(errStr));
+		errmsg.LogError(0, RS_RET_ERR, "sd_journal_seek_head() failed: '%s'", errStr);
+		ABORT_FINALIZE(RS_RET_ERR);
+	}
+
+finalize_it:
+	RETiRet;
+}
+
+
 /* This function loads a journal cursor from the state file.
  */
 static rsRetVal
@@ -597,6 +634,8 @@ CODESTARTrunInput
 
 	if (cs.stateFile) {
 		CHKiRet(loadJournalState());
+	} else {
+		CHKiRet(jumpToCurrentBootStart());
 	}
 
 	/* this is an endless loop - it is terminated when the thread is
