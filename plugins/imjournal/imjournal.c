@@ -443,25 +443,29 @@ persistJournalState () {
 	FILE *sf; /* state file */
 	char *cursor;
 	int ret = 0;
+	char errStr[256];
 
 	/* On success, sd_journal_get_cursor()  returns 1 in systemd
 	   197 or older and 0 in systemd 198 or newer */
 	if ((ret = sd_journal_get_cursor(j, &cursor)) >= 0) {
-		if ((sf = fopen(cs.stateFile, "wb")) != NULL) {
+		if (makeFileParentDirs((uchar*)cs.stateFile, strlen(cs.stateFile), 0755, -1, -1, 0) < 0) {
+			rs_strerror_r(errno, errStr, sizeof(errStr));
+			errmsg.LogError(0, RS_RET_IO_ERROR, "makeFileParentDirs() failed: "
+				"'%s', path: '%s'\n", errStr, cs.stateFile);
+			iRet = RS_RET_IO_ERROR;
+		} else if ((sf = fopen(cs.stateFile, "wb")) != NULL) {
 			if (fprintf(sf, "%s", cursor) < 0) {
 				iRet = RS_RET_IO_ERROR;
 			}
 			fclose(sf);
 			free(cursor);
 		} else {
-			char errStr[256];
 			rs_strerror_r(errno, errStr, sizeof(errStr));
 			errmsg.LogError(0, RS_RET_FOPEN_FAILURE, "fopen() failed: "
 				"'%s', path: '%s'\n", errStr, cs.stateFile);
 			iRet = RS_RET_FOPEN_FAILURE;
 		}
 	} else {
-		char errStr[256];
 		rs_strerror_r(-(ret), errStr, sizeof(errStr));
 		errmsg.LogError(0, RS_RET_ERR, "sd_journal_get_cursor() failed: '%s'\n", errStr);
 		iRet = RS_RET_ERR;
