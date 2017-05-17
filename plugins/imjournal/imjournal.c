@@ -564,6 +564,40 @@ finalize_it:
 	RETiRet;
 }
 
+/* Seek to the beginning of current boot or to tail of journal, depending on
+ * "ignore previous messages" setting.
+ */
+static rsRetVal
+skipOldMessages()
+{
+	DEFiRet;
+
+	if (cs.bIgnorePrevious) {
+		if (sd_journal_seek_tail(j) < 0) {
+			char errStr[256];
+
+			rs_strerror_r(errno, errStr, sizeof(errStr));
+			errmsg.LogError(0, RS_RET_ERR,
+				"sd_journal_seek_tail() failed: '%s'", errStr);
+			ABORT_FINALIZE(RS_RET_ERR);
+		}
+
+		if (sd_journal_previous(j) < 0) {
+			char errStr[256];
+
+			rs_strerror_r(errno, errStr, sizeof(errStr));
+			errmsg.LogError(0, RS_RET_ERR,
+				"sd_journal_previous() failed: '%s'", errStr);
+			ABORT_FINALIZE(RS_RET_ERR);
+		}
+	} else {
+		CHKiRet(jumpToCurrentBootStart());
+	}
+
+finalize_it:
+	RETiRet;
+}
+
 
 /* This function loads a journal cursor from the state file.
  */
@@ -588,49 +622,30 @@ loadJournalState()
 		FILE *r_sf;
 
 		if ((r_sf = fopen(cs.stateFile, "rb")) != NULL) {
-			char readCursor[128 + 1];
+			char readCursor[512 + 1];
 
-			if (fscanf(r_sf, "%128s\n", readCursor) != EOF) {
+			if (fscanf(r_sf, "%512s\n", readCursor) != EOF) {
 				if (sd_journal_seek_cursor(j, readCursor) != 0) {
 					errmsg.LogError(0, RS_RET_ERR, "imjournal: "
 						"couldn't seek to cursor `%s'\n", readCursor);
-					iRet = RS_RET_ERR;
-					goto finalize_it;
+					skipOldMessages();
+				} else {
+					sd_journal_next(j);
 				}
-				sd_journal_next(j);
 			} else {
 				errmsg.LogError(0, RS_RET_IO_ERROR, "imjournal: "
 					"fscanf on state file `%s' failed\n", cs.stateFile);
-				iRet = RS_RET_IO_ERROR;
-				goto finalize_it;
+				skipOldMessages();
 			}
 			fclose(r_sf);
 		} else {
 			errmsg.LogError(0, RS_RET_FOPEN_FAILURE, "imjournal: "
 					"open on state file `%s' failed\n", cs.stateFile);
+			skipOldMessages();
 		}
 	} else {
-		/* when IgnorePrevious, seek to the end of journal */
-		if (cs.bIgnorePrevious) {
-			if (sd_journal_seek_tail(j) < 0) {
-				char errStr[256];
-
-				rs_strerror_r(errno, errStr, sizeof(errStr));
-				errmsg.LogError(0, RS_RET_ERR,
-					"sd_journal_seek_tail() failed: '%s'", errStr);
-				ABORT_FINALIZE(RS_RET_ERR);
-			}
-
-			if (sd_journal_previous(j) < 0) {
-				char errStr[256];
-
-				rs_strerror_r(errno, errStr, sizeof(errStr));
-				errmsg.LogError(0, RS_RET_ERR,
-					"sd_journal_previous() failed: '%s'", errStr);
-				ABORT_FINALIZE(RS_RET_ERR);
-			}
-		}
-	} 
+		skipOldMessages();
+	}
 
 finalize_it:
 	RETiRet;
@@ -647,7 +662,7 @@ CODESTARTrunInput
 	if (cs.stateFile) {
 		CHKiRet(loadJournalState());
 	} else {
-		CHKiRet(jumpToCurrentBootStart());
+		skipOldMessages();
 	}
 
 	/* this is an endless loop - it is terminated when the thread is
