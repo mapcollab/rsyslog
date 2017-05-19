@@ -14,7 +14,7 @@
 Summary: Enhanced system logging and kernel message trapping daemon
 Name: rsyslog
 Version: 7.4.7
-Release: 12.mps.2%{?dist}
+Release: 12.mps.3%{?dist}
 License: (GPLv3+ and ASL 2.0)
 Group: System Environment/Daemons
 URL: http://www.rsyslog.com/
@@ -490,6 +490,18 @@ done
 #%{_libdir}/rsyslog/omudpspoof.so
 
 %changelog
+* Fri May 19 2017 Michal Gawlik <michal.gawlik@thalesgroup.com> 7.4.7-12.mps.3
+- imjournal: permissive imjournal.state restoration
+  (michal.gawlik@thalesgroup.com)
+- imjournal: write imjournal.state atomically using temp+rename method
+  (michal.gawlik@thalesgroup.com)
+- imjournal: don't reinit message counter inside the loop
+  (michal.gawlik@thalesgroup.com)
+- imjournal: create parent directory of imjournal.state
+  (michal.gawlik@thalesgroup.com)
+- imjournal: seek to current boot journal when no state file is used
+  (michal.gawlik@thalesgroup.com)
+
 * Fri Dec 02 2016 Michal Gawlik <michal.gawlik@thalesgroup.com> 7.4.7-12.mps.2
 - spec: add '.' after 'mps' subversion (michal.gawlik@thalesgroup.com)
 - rsyslog.spec: build rsyslog-mmjsonparse (tomasz.rostanski@thalesgroup.com.pl)
